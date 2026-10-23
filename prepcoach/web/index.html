@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PrepCoach Voice Simulator</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #171e26; --panel2: #1e2731; --line: #2a3541;
+    --text: #e6edf3; --muted: #8b98a5; --accent: #2dd4bf; --accent2: #38bdf8;
+    --good: #4ade80; --warn: #fbbf24; --bad: #f87171;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f4f6f8; --panel:#ffffff; --panel2:#eef2f6; --line:#d8e0e8; --text:#17202a; --muted:#5b6b7a; --accent:#0d9488; --accent2:#0369a1; --good:#15803d; --warn:#b45309; --bad:#b91c1c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  header { padding:14px 20px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+  header h1 { margin:0; font-size:18px; }
+  header small { color:var(--muted); }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  select, input[type=number], input[type=text], button { font:inherit; color:var(--text); background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:7px 10px; }
+  button { cursor:pointer; }
+  button.primary { background:var(--accent); color:#04201c; border-color:var(--accent); font-weight:600; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  label.toggle { color:var(--muted); font-size:13px; display:flex; gap:6px; align-items:center; }
+  main { display:grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap:16px; padding:16px 20px; max-width:1200px; margin:0 auto; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; padding:12px; } }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:12px; display:flex; flex-direction:column; min-height:0; }
+  section h2 { margin:0; padding:10px 14px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--line); }
+  #chat { padding:14px; overflow-y:auto; height:52vh; min-height:300px; display:flex; flex-direction:column; gap:10px; }
+  .msg { max-width:88%; padding:9px 12px; border-radius:12px; white-space:pre-wrap; }
+  .msg.bot { background:var(--panel2); border:1px solid var(--line); align-self:flex-start; }
+  .msg.me { background:var(--accent2); color:#04141f; align-self:flex-end; }
+  .msg.sys { align-self:center; color:var(--muted); font-size:13px; background:transparent; }
+  .msg .meta { display:block; font-size:11px; color:var(--muted); margin-bottom:2px; }
+  .composer { border-top:1px solid var(--line); padding:12px; display:flex; gap:8px; align-items:center; }
+  .composer input[type=text] { flex:1; min-width:0; }
+  #mic { width:54px; height:54px; border-radius:50%; font-size:22px; padding:0; background:var(--panel2); flex:none; }
+  #mic.live { background:var(--bad); border-color:var(--bad); animation:pulse 1.2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(248,113,113,.5)} 70%{box-shadow:0 0 0 14px rgba(248,113,113,0)} 100%{box-shadow:0 0 0 0 rgba(248,113,113,0)} }
+  .side { display:flex; flex-direction:column; gap:16px; }
+  #log { padding:10px 14px; overflow-y:auto; max-height:230px; font:12px/1.45 ui-monospace,Menlo,Consolas,monospace; }
+  .call { padding:6px 0; border-bottom:1px dashed var(--line); }
+  .call b { color:var(--accent); }
+  .badge { display:inline-block; padding:1px 7px; border-radius:99px; font-size:11px; border:1px solid var(--line); color:var(--muted); margin-left:6px; }
+  .badge.bedrock { color:var(--good); border-color:var(--good); }
+  .badge.gemini { color:var(--good); border-color:var(--good); }
+  .badge.fallback { color:var(--warn); border-color:var(--warn); }
+  #progress { padding:12px 14px; display:flex; flex-direction:column; gap:9px; }
+  .bar { display:grid; grid-template-columns:90px 1fr 46px; gap:8px; align-items:center; font-size:13px; }
+  .track { height:9px; background:var(--panel2); border-radius:99px; overflow:hidden; border:1px solid var(--line); }
+  .fill { height:100%; background:var(--good); }
+  .fill.low { background:var(--bad); } .fill.mid { background:var(--warn); }
+  .muted { color:var(--muted); font-size:13px; }
+  #report { padding:12px 14px; font-size:13px; }
+  #report .score { font-size:28px; font-weight:700; color:var(--accent); }
+  #report ul { margin:6px 0 0; padding-left:18px; }
+  #notice { padding:8px 20px; color:var(--warn); font-size:13px; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>PrepCoach <small>· voice simulator for an MCP-powered assistant</small></h1>
+    <div id="aiStatus" class="muted" style="font-size:12px">AI: checking...</div>
+  </div>
+  <div class="controls">
+    <select id="topic" aria-label="Topic">
+      <option value="">Weakest topic (auto)</option>
+      <option>arrays</option><option>strings</option><option>hashmaps</option><option>recursion</option><option>sorting</option>
+    </select>
+    <label class="toggle">Questions <input id="count" type="number" min="1" max="5" value="2" style="width:56px"></label>
+    <label class="toggle"><input id="voiceOut" type="checkbox" checked> Speak replies</label>
+    <button id="start" class="primary">Start interview</button>
+    <button id="reset" title="Clear saved progress">Reset</button>
+  </div>
+</header>
+<div id="notice"></div>
+<div id="aiStatus" class="muted" style="padding:6px 20px"></div>
+<main>
+  <section>
+    <h2>Conversation</h2>
+    <div id="chat"></div>
+    <div class="composer">
+      <button id="mic" title="Click to start speaking, click again to send" disabled>🎤</button>
+      <input id="text" type="text" placeholder="Or type your answer and press Enter" disabled>
+      <button id="send" disabled>Send</button>
+    </div>
+    <div id="micStatus" class="muted" style="padding:0 14px 10px;min-height:20px"></div>
+    <div id="meter" title="Live microphone volume" style="margin:0 14px 12px;height:8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);overflow:hidden"><div id="meterFill" style="height:100%;width:0;background:var(--good);transition:width .08s"></div></div>
+  </section>
+  <div class="side">
+    <section>
+      <h2>MCP tool calls</h2>
+      <div id="log"><span class="muted">Tool calls to the PrepCoach MCP server appear here.</span></div>
+    </section>
+    <section>
+      <h2>Weak-topic tracker</h2>
+      <div id="progress"><span class="muted">Answer a question to see your topics ranked.</span></div>
+    </section>
+    <section>
+      <h2>Interview report</h2>
+      <div id="report"><span class="muted">Finish an interview to see your score.</span></div>
+    </section>
+  </div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const chat = $('chat'), logEl = $('log');
+  let sessionId = null, listening = false, recognition = null, transcript = '', heard = '', speaking = false, busy = false;
+  const micStatus = msg => { $('micStatus').textContent = msg; };
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const canSpeak = 'speechSynthesis' in window;
+  if (!SR) {
+    const n = $('notice');
+    n.style.display = 'block';
+    n.textContent = 'Speech recognition isn\'t available in this browser (use Chrome or Edge for voice). You can still type your answers.';
+  }
+
+  function addMsg(kind, text, meta) {
+    const d = document.createElement('div');
+    d.className = 'msg ' + kind;
+    if (meta) { const m = document.createElement('span'); m.className = 'meta'; m.textContent = meta; d.appendChild(m); }
+    d.appendChild(document.createTextNode(text));
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function logCall(name, args, result, ms) {
+    if (logEl.querySelector('.muted')) logEl.innerHTML = '';
+    const d = document.createElement('div');
+    d.className = 'call';
+    const src = result && (result.grading_source || result.hint_source || result.explanation_source);
+    const short = JSON.stringify(args).slice(0, 90);
+    d.innerHTML = '<b></b><span class="badge"></span> <span class="muted"></span><br><span class="muted"></span>';
+    d.children[0].textContent = name;
+    d.children[1].textContent = ms + ' ms';
+    if (src) { const b = document.createElement('span'); b.className = 'badge ' + src; b.textContent = 'grading: ' + src; d.insertBefore(b, d.children[2]); }
+    d.querySelector('.muted').textContent = '';
+    d.lastChild.textContent = short;
+    logEl.appendChild(d);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  // Each browser gets its own id, so progress is per person and not shared.
+  const userId = (() => {
+    const fresh = () => 'u' + Math.random().toString(36).slice(2, 10);
+    try {
+      let u = localStorage.getItem('prepcoachUser');
+      if (!u) { u = fresh(); localStorage.setItem('prepcoachUser', u); }
+      return u;
+    } catch (e) { return fresh(); }
+  })();
+  const USER_TOOLS = new Set(['start_interview', 'get_weak_topics', 'get_progress', 'reset_progress']);
+
+  async function callTool(name, args) {
+    const t0 = performance.now();
+    const sent = USER_TOOLS.has(name) ? { ...args, user_id: userId } : args;
+    const res = await fetch('/api/tool', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name, args: sent }) });
+    const data = await res.json();
+    logCall(name, args, data, Math.round(performance.now() - t0));
+    if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+    return data;
+  }
+
+  function setInputs(on) { $('mic').disabled = !on || !SR; $('text').disabled = !on; $('send').disabled = !on; }
+
+  function speak(text) {
+    return new Promise(resolve => {
+      if (!canSpeak || !$('voiceOut').checked) return resolve();
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 1.02;
+      speaking = true;
+      u.onend = u.onerror = () => { speaking = false; resolve(); };
+      speechSynthesis.speak(u);
+    });
+  }
+
+  async function interviewerSays(text) {
+    addMsg('bot', text, 'Interviewer');
+    await speak(text);
+  }
+
+  async function refreshProgress() {
+    try {
+      const w = await callTool('get_weak_topics', {});
+      const el = $('progress');
+      if (!w.weakest_first.length) return;
+      el.innerHTML = '';
+      w.weakest_first.forEach(t => {
+        const pct = Math.round(t.accuracy * 100);
+        const cls = pct < 50 ? 'low' : pct < 75 ? 'mid' : '';
+        const row = document.createElement('div');
+        row.className = 'bar';
+        row.innerHTML = '<span></span><div class="track"><div class="fill ' + cls + '" style="width:' + pct + '%"></div></div><span class="muted"></span>';
+        row.children[0].textContent = t.topic;
+        row.children[2].textContent = pct + '%';
+        el.appendChild(row);
+      });
+      if (w.not_tried_yet.length) {
+        const m = document.createElement('div');
+        m.className = 'muted';
+        m.textContent = 'Not tried yet: ' + w.not_tried_yet.join(', ');
+        el.appendChild(m);
+      }
+    } catch (e) { /* tracker is optional */ }
+  }
+
+  function showReport(r) {
+    const el = $('report');
+    el.innerHTML = '';
+    const s = document.createElement('div');
+    s.innerHTML = '<span class="score"></span> <span class="muted">average out of 10</span>';
+    s.firstChild.textContent = r.average_score;
+    el.appendChild(s);
+    const v = document.createElement('div'); v.textContent = r.verdict; el.appendChild(v);
+    r.results.forEach(x => {
+      const h = document.createElement('div');
+      h.style.marginTop = '8px';
+      h.innerHTML = '<b></b> <span class="muted"></span>';
+      h.children[0].textContent = x.title + ': ' + x.score + '/10';
+      h.children[1].textContent = '(' + x.topic + ')';
+      el.appendChild(h);
+      if (x.model_answer && x.missed.length) {
+        const p = document.createElement('div');
+        p.className = 'muted';
+        p.textContent = 'Model answer: ' + x.model_answer;
+        el.appendChild(p);
+      }
+      if (x.missed.length) {
+        const ul = document.createElement('ul');
+        x.missed.forEach(m => { const li = document.createElement('li'); li.textContent = 'Missed: ' + m; ul.appendChild(li); });
+        el.appendChild(ul);
+      }
+    });
+  }
+
+  async function handleReply(r) {
+    await interviewerSays(r.interviewer_says);
+    if (r.finished) {
+      setInputs(false);
+      if (r.report) showReport(r.report);
+      addMsg('sys', 'Interview finished. Press "Start interview" to go again.');
+      sessionId = null;
+    }
+    refreshProgress();
+  }
+
+  async function sendAnswer(text) {
+    text = (text || '').trim();
+    if (!text || !sessionId || busy) return;
+    // The mic must be off while the interviewer talks, or it records the interviewer's own voice.
+    stopListening(false);
+    micStatus('');
+    busy = true; setInputs(false);
+    addMsg('me', text, 'You');
+    try {
+      const r = await callTool('answer_interview', { session_id: sessionId, answer: text });
+      busy = false;
+      await handleReply(r);
+      if (sessionId) setInputs(true);
+    } catch (e) {
+      busy = false; setInputs(true);
+      addMsg('sys', 'Error: ' + e.message);
+    }
+  }
+
+  // Live volume bar: separates "my mic is silent" from "Chrome's speech service isn't answering".
+  let audioCtx = null, micStream = null, meterTimer = null, diagTimer = null, peak = 0;
+  async function startMeter() {
+    peak = 0;
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const an = audioCtx.createAnalyser();
+      an.fftSize = 512;
+      audioCtx.createMediaStreamSource(micStream).connect(an);
+      const buf = new Uint8Array(an.fftSize);
+      meterTimer = setInterval(() => {
+        an.getByteTimeDomainData(buf);
+        let m = 0;
+        for (const v of buf) m = Math.max(m, Math.abs(v - 128));
+        const level = Math.min(1, m / 64);
+        peak = Math.max(peak, level);
+        $('meterFill').style.width = Math.round(level * 100) + '%';
+      }, 80);
+    } catch (e) {
+      micStatus('The browser could not open your microphone (' + e.name + '). Check the permission and the selected input device.');
+    }
+  }
+  function stopMeter() {
+    clearInterval(meterTimer); clearTimeout(diagTimer);
+    if (micStream) micStream.getTracks().forEach(t => t.stop());
+    if (audioCtx) audioCtx.close().catch(() => {});
+    micStream = audioCtx = null;
+    $('meterFill').style.width = '0';
+  }
+
+  function stopListening(send) {
+    if (!recognition) return;
+    listening = false;
+    stopMeter();
+    $('mic').classList.remove('live');
+    recognition.onend = null;
+    try { recognition.stop(); } catch (e) {}
+    recognition = null;
+    // Use everything heard so far, including words the browser hasn't finalized yet.
+    const said = (heard || transcript).trim();
+    micStatus(said ? '' : 'Nothing was heard, so nothing was sent. Check the status line while you speak.');
+    $('text').value = '';
+    if (send && said) sendAnswer(said);
+  }
+
+  function startListening() {
+    if (!SR || listening || busy) return;
+    if (canSpeak) speechSynthesis.cancel();
+    transcript = '';
+    heard = '';
+    recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onstart = () => micStatus('Starting the mic...');
+    recognition.onaudiostart = () => micStatus('Mic is on and receiving audio. Start speaking.');
+    recognition.onspeechstart = () => micStatus('Speech detected...');
+    recognition.onresult = ev => {
+      let finalText = '', interim = '';
+      for (let i = 0; i < ev.results.length; i++) {
+        const r = ev.results[i];
+        if (r.isFinal) finalText += r[0].transcript + ' '; else interim += r[0].transcript;
+      }
+      transcript = finalText;
+      heard = (finalText + interim).trim();
+      $('text').value = heard;
+      micStatus('Heard: "' + heard.slice(-80) + '"  (click the mic again to send)');
+    };
+    recognition.onerror = ev => {
+      const help = {
+        'not-allowed': 'Microphone permission is blocked. Click the lock icon in the address bar, set Microphone to Allow, then reload the page.',
+        'service-not-allowed': 'Speech recognition is blocked by the browser or system. Check your browser\'s microphone permission and your OS privacy settings.',
+        'audio-capture': 'No microphone was found. Check that a mic is connected and selected as the input device in your system settings.',
+        'network': 'Speech recognition needs an internet connection (Chrome sends audio to Google\'s speech service). Check your connection, and note that Brave and some VPNs/firewalls block it.',
+        'no-speech': 'I didn\'t hear anything. Check your input device and speak after the mic turns red.',
+        'language-not-supported': 'This browser does not support the selected language.'
+      }[ev.error] || ('Unexpected mic error: ' + ev.error);
+      addMsg('sys', 'Mic problem: ' + help + ' (You can still type your answer.)');
+      stopListening(false);
+    };
+    recognition.onend = () => { if (listening) { try { recognition.start(); } catch (e) {} } };
+    recognition.start();
+    listening = true;
+    $('mic').classList.add('live');
+    startMeter();
+    diagTimer = setTimeout(() => {
+      if (!listening || heard) return;
+      if (peak < 0.05) {
+        micStatus('DIAGNOSIS: the green bar stayed flat, so Chrome is getting no sound from your mic. Choose the right microphone at chrome://settings/content/microphone and in your system sound settings, and check that it is not muted.');
+      } else {
+        micStatus('DIAGNOSIS: your mic IS picking up sound, but Chrome\'s speech service returned no words. Check your internet, turn off any VPN, or try Microsoft Edge. Meanwhile, type your answer or use Windows voice typing (Win + H).');
+      }
+    }, 7000);
+  }
+
+  $('mic').onclick = () => listening ? stopListening(true) : startListening();
+  $('send').onclick = () => { const t = $('text').value; $('text').value = ''; sendAnswer(t); };
+  $('text').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { $('send').click(); return; }
+    if (listening) {  // typing takes over from the mic, keeping what is already in the box
+      const typed = $('text').value;
+      stopListening(false);
+      $('text').value = typed;
+      micStatus('Mic stopped because you started typing.');
+    }
+  });
+
+  $('start').onclick = async () => {
+    stopListening(false);
+    if (canSpeak) speechSynthesis.cancel();
+    chat.innerHTML = '';
+    $('report').innerHTML = '<span class="muted">Finish an interview to see your score.</span>';
+    $('start').disabled = true;
+    try {
+      const args = { num_questions: Math.max(1, Math.min(5, parseInt($('count').value, 10) || 2)) };
+      if ($('topic').value) args.topic = $('topic').value;
+      const r = await callTool('start_interview', args);
+      sessionId = r.session_id;
+      await interviewerSays(r.interviewer_says);
+      setInputs(true);
+      $('text').focus();
+    } catch (e) {
+      addMsg('sys', 'Could not start: ' + e.message);
+    }
+    $('start').disabled = false;
+  };
+
+  $('reset').onclick = async () => {
+    try { await callTool('reset_progress', {}); } catch (e) {}
+    $('progress').innerHTML = '<span class="muted">Answer a question to see your topics ranked.</span>';
+    addMsg('sys', 'Progress cleared.');
+  };
+
+  fetch('/api/status').then(r => r.json()).then(s => {
+    const parts = [];
+    if (s.bedrock_configured) parts.push('Amazon Bedrock (' + s.bedrock_model + ')');
+    if (s.gemini_configured) parts.push('Gemini (' + s.gemini_model + ')');
+    $('aiStatus').textContent = parts.length
+      ? 'AI grading will try: ' + parts.join(', then ') + '. Each tool call below shows which one answered.'
+      : 'AI grading is not configured, so keyword matching is used.';
+  }).catch(() => {});
+
+  async function refreshAi() {
+    try {
+      const s = await callTool('llm_status', { check: true });
+      $('aiStatus').textContent = 'AI: ' + s.summary;
+      $('aiStatus').style.color = s.working ? 'var(--good)' : 'var(--warn)';
+    } catch (e) { $('aiStatus').textContent = 'AI: status unavailable'; }
+  }
+
+  addMsg('sys', 'Press "Start interview". Click the mic to speak your answer, click it again to send.');
+  refreshProgress();
+  refreshAi();
+})();
+</script>
+</body>
+</html>

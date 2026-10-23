@@ -1,0 +1,1374 @@
+[
+  {
+    "id": "max-subarray",
+    "topic": "arrays",
+    "title": "Maximum Subarray",
+    "prompt": "Given an array of integers that can include negatives, how would you find the contiguous subarray with the largest sum? Start with a simple approach, then improve it, and tell me the complexity.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "the brute-force approach of checking every subarray, which is O(n^2) or worse",
+        "keywords": [
+          "brute force",
+          "every subarray",
+          "all subarrays",
+          "nested loop",
+          "two loops",
+          "n squared",
+          "n^2",
+          "o(n^2)"
+        ],
+        "probe": "Let's start simple. What's the most straightforward way you could try, even if it's slow, and how slow is it?"
+      },
+      {
+        "id": "k2",
+        "description": "a single pass that keeps a running sum, as in Kadane's algorithm",
+        "keywords": [
+          "kadane",
+          "running sum",
+          "current sum",
+          "max ending here",
+          "maximum ending here",
+          "single pass",
+          "one pass"
+        ],
+        "probe": "Can you do it in a single pass? What would you keep track of as you move through the array?"
+      },
+      {
+        "id": "k3",
+        "description": "dropping or resetting the running sum when it goes negative",
+        "keywords": [
+          "negative",
+          "reset",
+          "restart",
+          "drop",
+          "start fresh",
+          "start over",
+          "discard"
+        ],
+        "probe": "If you keep a running sum as you scan the array, what should you do when it becomes negative, and why?"
+      },
+      {
+        "id": "k4",
+        "description": "tracking the best sum seen so far separately from the current sum",
+        "keywords": [
+          "best so far",
+          "max so far",
+          "maximum so far",
+          "global max",
+          "global maximum",
+          "update the max",
+          "update the maximum",
+          "track the max",
+          "track the maximum",
+          "keep the max",
+          "keep the maximum"
+        ],
+        "probe": "If you also track a current sum, how do you remember the best answer overall?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) time and O(1) extra space",
+        "keywords": [
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What's the time and space complexity of your final approach?"
+      }
+    ],
+    "model_answer": "Brute force checks every subarray, which is O(n squared). Better is Kadane's algorithm: scan once, keep a running sum, and if it drops below zero reset it to zero, because a negative prefix only hurts. After each step update the best sum seen so far. That is O(n) time and O(1) space."
+  },
+  {
+    "id": "binary-search",
+    "topic": "arrays",
+    "title": "Binary Search",
+    "prompt": "How would you search for a target value in a sorted array efficiently? Walk me through the algorithm and the complexity.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "the requirement that the array is sorted",
+        "keywords": [
+          "sorted",
+          "sort order",
+          "in order"
+        ],
+        "probe": "What has to be true about the array for this approach to work?"
+      },
+      {
+        "id": "k2",
+        "description": "comparing the target with the middle element",
+        "keywords": [
+          "middle",
+          "mid",
+          "midpoint",
+          "center"
+        ],
+        "probe": "At each step, which element do you look at first?"
+      },
+      {
+        "id": "k3",
+        "description": "discarding half of the search range at each step",
+        "keywords": [
+          "half",
+          "halve",
+          "halves",
+          "discard",
+          "eliminate",
+          "cut"
+        ],
+        "probe": "Once you compare the target with the middle element, what happens to the search range?"
+      },
+      {
+        "id": "k4",
+        "description": "maintaining low and high pointers and stopping when they cross",
+        "keywords": [
+          "low",
+          "high",
+          "left pointer",
+          "right pointer",
+          "left and right",
+          "pointers",
+          "start and end",
+          "two pointers"
+        ],
+        "probe": "How do you keep track of the current range, and when do you stop if the target isn't there?"
+      },
+      {
+        "id": "k5",
+        "description": "O(log n) time",
+        "keywords": [
+          "o(logn)",
+          "logn",
+          "logarithmic"
+        ],
+        "probe": "What's the time complexity, and why?"
+      }
+    ],
+    "model_answer": "The array must be sorted. Keep low and high pointers, compare the target with the middle element, and discard the half that cannot contain it. Repeat until you find it or low passes high. Each step halves the range, so it is O(log n) time."
+  },
+  {
+    "id": "valid-anagram",
+    "topic": "strings",
+    "title": "Valid Anagram",
+    "prompt": "Given two strings, how would you check whether one is an anagram of the other? Describe your approach and its complexity.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "checking that the two lengths match first",
+        "keywords": [
+          "length",
+          "lengths",
+          "same size"
+        ],
+        "probe": "Is there a quick check you can do before looking at any characters?"
+      },
+      {
+        "id": "k2",
+        "description": "counting character frequencies, for example with a hash map or an array",
+        "keywords": [
+          "frequency",
+          "frequencies",
+          "count",
+          "counter",
+          "hash map",
+          "hashmap",
+          "dictionary",
+          "hash table"
+        ],
+        "probe": "How could you represent how many times each character appears?"
+      },
+      {
+        "id": "k3",
+        "description": "comparing the two counts, or incrementing for one string and decrementing for the other",
+        "keywords": [
+          "compare",
+          "equal",
+          "same counts",
+          "decrement",
+          "match",
+          "identical"
+        ],
+        "probe": "Once you have the character counts for both strings, how do you decide whether they are anagrams?"
+      },
+      {
+        "id": "k4",
+        "description": "the alternative of sorting both strings and comparing them, which is O(n log n)",
+        "keywords": [
+          "sort",
+          "sorted",
+          "sorting"
+        ],
+        "probe": "Is there another, simpler approach that doesn't use counting? What would it cost?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) time for the counting approach",
+        "keywords": [
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What's the time complexity of the counting approach?"
+      }
+    ],
+    "model_answer": "First check that the lengths match. Then count each character's frequency in a hash map or a 26-slot array, incrementing for one string and decrementing for the other, and check that every count ends at zero. That is O(n) time. Sorting both strings and comparing also works but costs O(n log n)."
+  },
+  {
+    "id": "valid-palindrome",
+    "topic": "strings",
+    "title": "Valid Palindrome",
+    "prompt": "Given a sentence with spaces and punctuation, how would you check whether it reads the same forwards and backwards, ignoring case and non-letters?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "two pointers starting at both ends and moving inward",
+        "keywords": [
+          "two pointers",
+          "two pointer",
+          "both ends",
+          "left and right",
+          "start and end",
+          "front and back",
+          "beginning and end"
+        ],
+        "probe": "Is there a way to check this without building a reversed copy? Where would you start comparing?"
+      },
+      {
+        "id": "k2",
+        "description": "ignoring case by converting to lowercase",
+        "keywords": [
+          "lowercase",
+          "lower case",
+          "ignore case",
+          "case insensitive",
+          "convert to lower"
+        ],
+        "probe": "How do you handle uppercase versus lowercase letters?"
+      },
+      {
+        "id": "k3",
+        "description": "skipping non-alphanumeric characters such as spaces and punctuation",
+        "keywords": [
+          "skip",
+          "non alphanumeric",
+          "punctuation",
+          "spaces",
+          "alphanumeric",
+          "isalnum",
+          "special characters"
+        ],
+        "probe": "If you compare characters from both ends, what do you do when you land on a space or a comma?"
+      },
+      {
+        "id": "k4",
+        "description": "O(n) time and O(1) extra space",
+        "keywords": [
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What are the time and space complexities?"
+      }
+    ],
+    "model_answer": "Use two pointers, one at each end, moving inward. Skip anything that is not a letter or digit, compare the lowercase versions, and return false on any mismatch. It is O(n) time and O(1) extra space because you never build a reversed copy."
+  },
+  {
+    "id": "two-sum",
+    "topic": "hashmaps",
+    "title": "Two Sum",
+    "prompt": "Given a list of numbers and a target, how would you return the positions of two numbers that add up to the target? Start with your approach, then tell me the complexity.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "the brute-force approach of checking every pair, which is O(n^2)",
+        "keywords": [
+          "brute force",
+          "nested loop",
+          "two loops",
+          "every pair",
+          "all pairs",
+          "n squared",
+          "n^2",
+          "o(n^2)"
+        ],
+        "probe": "Let's start simple. What's the most straightforward approach, and how slow is it?"
+      },
+      {
+        "id": "k2",
+        "description": "storing the numbers already seen in a hash map",
+        "keywords": [
+          "hash map",
+          "hashmap",
+          "dictionary",
+          "hash table"
+        ],
+        "probe": "Can you do better than checking every pair? What data structure could help you look things up faster?"
+      },
+      {
+        "id": "k3",
+        "description": "looking up the complement, which is the target minus the current number",
+        "keywords": [
+          "complement",
+          "target minus",
+          "subtract",
+          "the difference",
+          "remaining value"
+        ],
+        "probe": "If you store numbers in a hash map as you go, what exactly do you look up for each new number?"
+      },
+      {
+        "id": "k4",
+        "description": "O(n) time using a single pass",
+        "keywords": [
+          "o(n)",
+          "linear",
+          "single pass",
+          "one pass"
+        ],
+        "probe": "What's the time complexity of that approach?"
+      },
+      {
+        "id": "k5",
+        "description": "storing indices as the map values so positions can be returned",
+        "keywords": [
+          "index",
+          "indices",
+          "position"
+        ],
+        "probe": "The problem asks for positions, not values. What do you store in the map?"
+      }
+    ],
+    "model_answer": "Brute force checks every pair in O(n squared). Better is one pass with a hash map from value to index. For each number, look up target minus that number; if it is in the map, return both indices, otherwise store the current number. That is O(n) time."
+  },
+  {
+    "id": "lru-cache",
+    "topic": "hashmaps",
+    "title": "LRU Cache",
+    "prompt": "How would you design an LRU cache with a fixed capacity that supports get and put, both in constant time?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "a hash map for O(1) lookup by key",
+        "keywords": [
+          "hash map",
+          "hashmap",
+          "dictionary",
+          "hash table"
+        ],
+        "probe": "What gives you constant-time lookup by key?"
+      },
+      {
+        "id": "k2",
+        "description": "a doubly linked list to track usage order",
+        "keywords": [
+          "doubly linked",
+          "double linked",
+          "linked list",
+          "ordered dict",
+          "ordereddict"
+        ],
+        "probe": "How would you track which item was used least recently, and update that order in constant time?"
+      },
+      {
+        "id": "k3",
+        "description": "moving an item to the front on every access",
+        "keywords": [
+          "move to front",
+          "most recent",
+          "most recently",
+          "move it to the head",
+          "move to the head",
+          "front of the list",
+          "head of the list"
+        ],
+        "probe": "What happens to an item's position when you read or update it?"
+      },
+      {
+        "id": "k4",
+        "description": "evicting the least recently used item from the tail when over capacity",
+        "keywords": [
+          "evict",
+          "least recently",
+          "remove the last",
+          "remove the tail",
+          "tail",
+          "remove from the end"
+        ],
+        "probe": "What do you do when the cache is full and a new item arrives?"
+      },
+      {
+        "id": "k5",
+        "description": "O(1) time for both get and put",
+        "keywords": [
+          "o(1)",
+          "constant"
+        ],
+        "probe": "What's the time complexity of get and put in your design?"
+      }
+    ],
+    "model_answer": "Combine a hash map with a doubly linked list. The map gives O(1) lookup from key to node, and the list keeps items in usage order. On every get or put, move the node to the front. When over capacity, evict the node at the tail, which is the least recently used. Both operations are O(1)."
+  },
+  {
+    "id": "fibonacci",
+    "topic": "recursion",
+    "title": "Fibonacci",
+    "prompt": "Explain how you'd compute the nth Fibonacci number recursively, what's wrong with the naive version, and how you'd fix it.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "base cases for n equal to 0 and 1",
+        "keywords": [
+          "base case",
+          "base cases",
+          "fib(0)",
+          "f(0)",
+          "n is 0",
+          "n equals 0",
+          "n equals 1",
+          "zero and one",
+          "0 and 1"
+        ],
+        "probe": "What stops the recursion? What are the simplest inputs you can answer directly?"
+      },
+      {
+        "id": "k2",
+        "description": "the recurrence fib(n) = fib(n-1) + fib(n-2)",
+        "keywords": [
+          "n-1",
+          "n minus 1",
+          "n minus one",
+          "previous two",
+          "two previous",
+          "sum of the previous",
+          "fib(n-1)",
+          "f(n-1)"
+        ],
+        "probe": "How is each Fibonacci number defined in terms of smaller ones?"
+      },
+      {
+        "id": "k3",
+        "description": "the naive version being exponential, about O(2^n), because it recomputes the same subproblems",
+        "keywords": [
+          "exponential",
+          "2^n",
+          "2 to the n",
+          "two to the n",
+          "o(2^n)",
+          "recompute",
+          "repeated",
+          "overlapping",
+          "same subproblems",
+          "same values"
+        ],
+        "probe": "What's the time complexity of the naive version, and why is it so slow?"
+      },
+      {
+        "id": "k4",
+        "description": "fixing it with memoization or dynamic programming",
+        "keywords": [
+          "memoization",
+          "memoisation",
+          "memo",
+          "cache",
+          "dynamic programming",
+          "dp",
+          "bottom up",
+          "bottom-up",
+          "tabulation"
+        ],
+        "probe": "How could you avoid recomputing the same values?"
+      },
+      {
+        "id": "k5",
+        "description": "the improved version running in O(n) time",
+        "keywords": [
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What's the time complexity once you avoid recomputing values?"
+      }
+    ],
+    "model_answer": "The base cases are fib(0) = 0 and fib(1) = 1, and otherwise fib(n) = fib(n-1) + fib(n-2). The naive version is about O(2^n) because it recomputes the same subproblems. Fix it with memoization or bottom-up dynamic programming so each value is computed once, giving O(n) time."
+  },
+  {
+    "id": "permutations",
+    "topic": "recursion",
+    "title": "Generate Permutations",
+    "prompt": "Given a list of distinct numbers, how would you generate all of its permutations using recursion?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "a base case where a full permutation has been built",
+        "keywords": [
+          "base case",
+          "all positions",
+          "reached the end",
+          "end of the array",
+          "length of the array",
+          "no elements left",
+          "empty",
+          "full permutation",
+          "complete permutation",
+          "same length"
+        ],
+        "probe": "When does the recursion stop and record a result?"
+      },
+      {
+        "id": "k2",
+        "description": "choosing an element for the current position and recursing on the rest",
+        "keywords": [
+          "choose",
+          "pick",
+          "fix",
+          "swap",
+          "for each element",
+          "each element",
+          "loop through",
+          "try each",
+          "try every"
+        ],
+        "probe": "At each step, how do you decide what goes in the current position?"
+      },
+      {
+        "id": "k3",
+        "description": "backtracking, which means undoing the choice after the recursive call",
+        "keywords": [
+          "backtrack",
+          "undo",
+          "unchoose",
+          "swap back",
+          "remove it",
+          "pop",
+          "restore",
+          "revert"
+        ],
+        "probe": "After exploring one choice, what must you do before trying the next one?"
+      },
+      {
+        "id": "k4",
+        "description": "the number of permutations being n factorial, which drives the running time",
+        "keywords": [
+          "factorial",
+          "n factorial"
+        ],
+        "probe": "How many permutations will there be, and what does that mean for the running time?"
+      }
+    ],
+    "model_answer": "Recurse by choosing an element for the current position, recursing on the remaining elements, then undoing the choice, which is backtracking, before trying the next one. When the current permutation has all n elements, record it. There are n factorial permutations, so the running time is at least O(n!)."
+  },
+  {
+    "id": "merge-sort",
+    "topic": "sorting",
+    "title": "Merge Sort",
+    "prompt": "Explain how merge sort works and analyse its time and space complexity.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "splitting the array into two halves",
+        "keywords": [
+          "split",
+          "divide",
+          "halves",
+          "half",
+          "middle"
+        ],
+        "probe": "What's the first thing you do to the array?"
+      },
+      {
+        "id": "k2",
+        "description": "recursively sorting each half",
+        "keywords": [
+          "recursive",
+          "recursively",
+          "recursion",
+          "sort each",
+          "sort both"
+        ],
+        "probe": "Once you've split the array, how do the halves get sorted?"
+      },
+      {
+        "id": "k3",
+        "description": "merging two sorted halves using two pointers",
+        "keywords": [
+          "merging",
+          "combine",
+          "two pointers",
+          "merge the",
+          "merge two",
+          "merge them",
+          "merge step"
+        ],
+        "probe": "Once the halves are sorted, how do you combine them into one sorted array?"
+      },
+      {
+        "id": "k4",
+        "description": "O(n log n) time in all cases",
+        "keywords": [
+          "o(nlogn)",
+          "nlogn"
+        ],
+        "probe": "What's the time complexity, and where does that come from?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) extra space for the merge",
+        "keywords": [
+          "extra space",
+          "auxiliary",
+          "temporary array",
+          "temp array",
+          "additional array",
+          "o(n) space",
+          "space is o(n)",
+          "space complexity is o(n)",
+          "o(n) extra"
+        ],
+        "probe": "What about space complexity? Does merging need extra memory?"
+      }
+    ],
+    "model_answer": "Split the array in half, recursively sort each half, then merge the two sorted halves using two pointers. There are log n levels and each does O(n) merge work, so it is O(n log n) in every case. The merge needs a temporary array, so extra space is O(n)."
+  },
+  {
+    "id": "quicksort",
+    "topic": "sorting",
+    "title": "Quicksort",
+    "prompt": "Explain how quicksort works, when it performs badly, and how you'd reduce that risk.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "choosing a pivot element",
+        "keywords": [
+          "pivot"
+        ],
+        "probe": "What's the first decision you make on each recursive call?"
+      },
+      {
+        "id": "k2",
+        "description": "partitioning so smaller elements go left and larger elements go right",
+        "keywords": [
+          "partition",
+          "smaller",
+          "less than",
+          "greater than",
+          "left of the pivot",
+          "right of the pivot",
+          "larger"
+        ],
+        "probe": "Once you've picked a pivot, what do you do with the rest of the elements relative to it?"
+      },
+      {
+        "id": "k3",
+        "description": "recursing on both sides of the pivot",
+        "keywords": [
+          "recursive",
+          "recursively",
+          "recursion",
+          "both sides",
+          "left and right",
+          "each side",
+          "sub arrays",
+          "subarrays"
+        ],
+        "probe": "After partitioning, what happens to the two sides?"
+      },
+      {
+        "id": "k4",
+        "description": "the worst case being O(n^2) with consistently bad pivots, such as an already sorted array",
+        "keywords": [
+          "worst case",
+          "n squared",
+          "n^2",
+          "o(n^2)",
+          "already sorted",
+          "bad pivot",
+          "unbalanced",
+          "skewed"
+        ],
+        "probe": "When does quicksort perform badly, and how badly?"
+      },
+      {
+        "id": "k5",
+        "description": "reducing the risk with a random pivot or median-of-three",
+        "keywords": [
+          "random pivot",
+          "randomize",
+          "randomise",
+          "random",
+          "median of three",
+          "median-of-three",
+          "median"
+        ],
+        "probe": "How could you make that worst case unlikely?"
+      }
+    ],
+    "model_answer": "Pick a pivot, partition so smaller elements go left and larger go right, then recursively sort both sides. Average time is O(n log n), but with consistently bad pivots, such as an already sorted array with the first element as pivot, it degrades to O(n squared). A random pivot or median-of-three makes that unlikely."
+  },
+  {
+    "id": "move-zeroes",
+    "topic": "arrays",
+    "title": "Move Zeroes",
+    "prompt": "Given an array of numbers, how would you move all the zeros to the end while keeping the order of the other numbers, doing it in place?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "using two pointers, with one pointer marking where the next non-zero value goes",
+        "keywords": [
+          "two pointers",
+          "two pointer",
+          "write pointer",
+          "slow pointer",
+          "fast pointer",
+          "slow and fast",
+          "pointer"
+        ],
+        "probe": "Is there a way to do this in one pass using pointers? What would each pointer track?"
+      },
+      {
+        "id": "k2",
+        "description": "working in place without allocating a second array",
+        "keywords": [
+          "in place",
+          "in-place",
+          "no extra array",
+          "without extra",
+          "no extra space",
+          "constant space",
+          "o(1)"
+        ],
+        "probe": "How would you avoid creating a new array?"
+      },
+      {
+        "id": "k3",
+        "description": "swapping each non-zero value into the next free slot, or overwriting and then filling the rest with zeros",
+        "keywords": [
+          "swap",
+          "swapping",
+          "overwrite",
+          "fill the rest",
+          "fill the remaining",
+          "fill with zeros"
+        ],
+        "probe": "When a pointer finds a non-zero value, what do you do with it?"
+      },
+      {
+        "id": "k4",
+        "description": "preserving the relative order of the non-zero numbers",
+        "keywords": [
+          "relative order",
+          "same order",
+          "keep the order",
+          "maintain the order",
+          "maintains the order",
+          "stable",
+          "order of the"
+        ],
+        "probe": "What guarantee does the problem need about the non-zero numbers, and how does your approach provide it?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) time in a single pass and O(1) extra space",
+        "keywords": [
+          "o(n)",
+          "linear",
+          "single pass",
+          "one pass"
+        ],
+        "probe": "What are the time and space complexities?"
+      }
+    ],
+    "model_answer": "Use two pointers. Scan with one pointer, and every time you see a non-zero value, swap it with the position of the write pointer and advance the write pointer. Zeros end up at the back, and the non-zero numbers keep their relative order. It works in place, in one pass: O(n) time and O(1) extra space."
+  },
+  {
+    "id": "merge-intervals",
+    "topic": "arrays",
+    "title": "Merge Intervals",
+    "prompt": "Given a list of intervals, how would you merge all the overlapping ones? Walk me through the approach and the complexity.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "sorting the intervals by their start time first",
+        "keywords": [
+          "sort",
+          "sorted",
+          "sorting",
+          "by start",
+          "start time"
+        ],
+        "probe": "What would you do to the list before looking for overlaps, and why does it help?"
+      },
+      {
+        "id": "k2",
+        "description": "comparing each interval's start with the end of the last merged interval",
+        "keywords": [
+          "last merged",
+          "previous interval",
+          "compare the start",
+          "end of the last",
+          "last interval",
+          "overlap",
+          "overlaps"
+        ],
+        "probe": "Once the list is ready, what do you compare to decide whether two intervals overlap?"
+      },
+      {
+        "id": "k3",
+        "description": "extending the end to the larger of the two ends when they overlap, otherwise starting a new interval",
+        "keywords": [
+          "max",
+          "maximum",
+          "extend",
+          "larger end",
+          "update the end",
+          "new interval",
+          "append"
+        ],
+        "probe": "When two intervals overlap, what does the merged interval look like?"
+      },
+      {
+        "id": "k4",
+        "description": "O(n log n) time because of the sort",
+        "keywords": [
+          "o(nlogn)",
+          "nlogn"
+        ],
+        "probe": "What's the time complexity, and which step dominates it?"
+      }
+    ],
+    "model_answer": "Sort the intervals by start. Keep a result list, and for each interval compare its start with the end of the last merged interval. If they overlap, extend that end to the larger of the two ends; otherwise append a new interval. Sorting dominates, so it is O(n log n) time, with O(n) space for the output."
+  },
+  {
+    "id": "valid-parentheses",
+    "topic": "strings",
+    "title": "Valid Parentheses",
+    "prompt": "Given a string containing only brackets, like round, square and curly ones, how would you check that they are balanced and properly nested?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "using a stack",
+        "keywords": [
+          "stack"
+        ],
+        "probe": "What data structure naturally matches the most recent opening bracket with the next closing one?"
+      },
+      {
+        "id": "k2",
+        "description": "pushing each opening bracket onto the stack",
+        "keywords": [
+          "push",
+          "opening bracket",
+          "open bracket",
+          "opening"
+        ],
+        "probe": "What do you do when you read an opening bracket?"
+      },
+      {
+        "id": "k3",
+        "description": "on a closing bracket, checking that the top of the stack is the matching opening bracket, then popping it",
+        "keywords": [
+          "pop",
+          "top of the stack",
+          "matching",
+          "matches",
+          "closing"
+        ],
+        "probe": "What do you do when you read a closing bracket?"
+      },
+      {
+        "id": "k4",
+        "description": "returning true only if the stack is empty at the end, and false if a closing bracket finds an empty stack",
+        "keywords": [
+          "empty",
+          "nothing left"
+        ],
+        "probe": "What must be true when you reach the end of the string?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) time and O(n) space in the worst case",
+        "keywords": [
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What are the time and space complexities?"
+      }
+    ],
+    "model_answer": "Use a stack. Push every opening bracket. For a closing bracket, check that the top of the stack is the matching opening bracket and pop it; if not, the string is invalid. At the end the stack must be empty. It is O(n) time and O(n) space in the worst case."
+  },
+  {
+    "id": "longest-substring",
+    "topic": "strings",
+    "title": "Longest Substring Without Repeats",
+    "prompt": "Given a string, how would you find the length of the longest substring without repeating characters?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "a sliding window over the string",
+        "keywords": [
+          "sliding window",
+          "window"
+        ],
+        "probe": "Is there a way to look at each character only a constant number of times? What shape would the part you're tracking have?"
+      },
+      {
+        "id": "k2",
+        "description": "a set or map that tracks the characters currently inside the window",
+        "keywords": [
+          "set",
+          "hash set",
+          "hashmap",
+          "hash map",
+          "dictionary",
+          "last seen",
+          "map"
+        ],
+        "probe": "How do you check quickly whether a new character is already in the window?"
+      },
+      {
+        "id": "k3",
+        "description": "moving the left edge forward when a repeated character appears",
+        "keywords": [
+          "left pointer",
+          "move the left",
+          "shrink",
+          "left edge",
+          "start pointer",
+          "move the start",
+          "remove from the left",
+          "jump"
+        ],
+        "probe": "What do you do when the new character is already in the window?"
+      },
+      {
+        "id": "k4",
+        "description": "updating the best length after each step",
+        "keywords": [
+          "max length",
+          "maximum length",
+          "longest so far",
+          "best length",
+          "update the max",
+          "update the maximum",
+          "max so far",
+          "maximum so far",
+          "track the max",
+          "track the maximum"
+        ],
+        "probe": "How do you remember the longest valid window you have seen?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) time",
+        "keywords": [
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What's the time complexity?"
+      }
+    ],
+    "model_answer": "Use a sliding window with a set, or a map of each character's last seen index. Move the right edge one character at a time. If the new character is already in the window, move the left edge forward until the duplicate is gone. After each step update the best length. Each character enters and leaves the window at most once, so it is O(n) time."
+  },
+  {
+    "id": "group-anagrams",
+    "topic": "hashmaps",
+    "title": "Group Anagrams",
+    "prompt": "Given a list of words, how would you group together the words that are anagrams of each other?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "building a key that is identical for all anagrams, such as the sorted letters or a letter-count signature",
+        "keywords": [
+          "sorted",
+          "sort the letters",
+          "sorted letters",
+          "signature",
+          "canonical",
+          "letter count",
+          "character count",
+          "frequency",
+          "key"
+        ],
+        "probe": "What could you compute for each word so that anagrams get the same value?"
+      },
+      {
+        "id": "k2",
+        "description": "a hash map from that key to the list of words",
+        "keywords": [
+          "hash map",
+          "hashmap",
+          "dictionary",
+          "map from",
+          "hash table",
+          "group by"
+        ],
+        "probe": "How do you collect the words that share the same value?"
+      },
+      {
+        "id": "k3",
+        "description": "returning the map's values as the groups",
+        "keywords": [
+          "values",
+          "return the groups",
+          "list of lists",
+          "each group",
+          "all the lists"
+        ],
+        "probe": "Once every word is placed, how do you produce the final answer?"
+      },
+      {
+        "id": "k4",
+        "description": "O(n times k log k) with sorting, or O(n times k) with letter counts, where k is the word length",
+        "keywords": [
+          "o(nklogk)",
+          "nklogk",
+          "n times k",
+          "k log k",
+          "o(nk)"
+        ],
+        "probe": "What's the time complexity in terms of the number of words and their length?"
+      }
+    ],
+    "model_answer": "For each word compute a key that is the same for all anagrams, either the word's letters sorted or a 26-letter count tuple. Store the words in a hash map from key to list, then return the map's values. With sorting it is O(n times k log k) for n words of length k; with letter counts it is O(n times k)."
+  },
+  {
+    "id": "top-k-frequent",
+    "topic": "hashmaps",
+    "title": "Top K Frequent Elements",
+    "prompt": "Given a list of numbers and an integer k, how would you find the k most frequent numbers?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "counting each number's frequency with a hash map",
+        "keywords": [
+          "hash map",
+          "hashmap",
+          "dictionary",
+          "counter",
+          "frequency",
+          "frequencies",
+          "count"
+        ],
+        "probe": "What is the first thing you need to know about each number, and how would you store it?"
+      },
+      {
+        "id": "k2",
+        "description": "selecting the top k with a min-heap of size k, or with bucket sort by frequency",
+        "keywords": [
+          "heap",
+          "min heap",
+          "min-heap",
+          "priority queue",
+          "bucket"
+        ],
+        "probe": "Once you have the counts, how do you pick the k largest without fully sorting everything?"
+      },
+      {
+        "id": "k3",
+        "description": "the simple alternative of sorting the counts, at O(n log n)",
+        "keywords": [
+          "sort",
+          "sorted",
+          "sorting"
+        ],
+        "probe": "What is the simplest way to pick the top k from the counts, and what does it cost?"
+      },
+      {
+        "id": "k4",
+        "description": "O(n log k) time with the heap, or O(n) with bucket sort",
+        "keywords": [
+          "o(nlogk)",
+          "nlogk",
+          "n log k",
+          "o(n)",
+          "linear"
+        ],
+        "probe": "What's the time complexity of your best approach?"
+      }
+    ],
+    "model_answer": "Count frequencies with a hash map. Then either sort the counts, which costs O(n log n), or keep a min-heap of size k and push and pop each entry, which costs O(n log k), or use bucket sort by frequency for O(n). Return the k numbers left."
+  },
+  {
+    "id": "max-depth-tree",
+    "topic": "recursion",
+    "title": "Maximum Depth of a Binary Tree",
+    "prompt": "Given the root of a binary tree, how would you compute its maximum depth using recursion?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "a base case where an empty node has depth zero",
+        "keywords": [
+          "base case",
+          "null",
+          "none",
+          "empty",
+          "zero"
+        ],
+        "probe": "What does the recursion return for an empty node?"
+      },
+      {
+        "id": "k2",
+        "description": "the depth of a node is one plus the larger depth of its left and right subtrees",
+        "keywords": [
+          "one plus",
+          "1 plus",
+          "max of left and right",
+          "maximum of",
+          "larger of",
+          "left and right",
+          "plus the max"
+        ],
+        "probe": "How is a node's depth related to the depths of its children?"
+      },
+      {
+        "id": "k3",
+        "description": "visiting every node once, so O(n) time",
+        "keywords": [
+          "o(n)",
+          "linear",
+          "each node once",
+          "every node once",
+          "visit each node",
+          "visits every node"
+        ],
+        "probe": "How many times is each node visited, and what is the time complexity?"
+      },
+      {
+        "id": "k4",
+        "description": "O(h) space for the recursion stack, up to O(n) for a skewed tree",
+        "keywords": [
+          "o(h)",
+          "height",
+          "call stack",
+          "recursion stack",
+          "stack space",
+          "skewed"
+        ],
+        "probe": "What about space? What uses memory while the recursion runs?"
+      },
+      {
+        "id": "k5",
+        "description": "the iterative alternative using a level-order traversal with a queue",
+        "keywords": [
+          "bfs",
+          "breadth first",
+          "breadth-first",
+          "level order",
+          "level-order",
+          "queue",
+          "iterative"
+        ],
+        "probe": "Can you think of a non-recursive way to get the same answer?"
+      }
+    ],
+    "model_answer": "If the node is empty return 0. Otherwise return 1 plus the larger of the depths of the left and right subtrees. Every node is visited once, so time is O(n), and the recursion stack uses O(h) space, which is O(n) for a skewed tree. A level-order traversal with a queue gives the same answer iteratively."
+  },
+  {
+    "id": "subsets",
+    "topic": "recursion",
+    "title": "Generate All Subsets",
+    "prompt": "Given a list of distinct numbers, how would you generate all possible subsets using recursion?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "a binary choice for each element: include it or exclude it",
+        "keywords": [
+          "include",
+          "exclude",
+          "take or skip",
+          "take it or",
+          "pick or skip",
+          "in or out",
+          "two choices",
+          "two options"
+        ],
+        "probe": "For each element, how many choices do you have, and what are they?"
+      },
+      {
+        "id": "k2",
+        "description": "a recursive function that moves an index forward through the list",
+        "keywords": [
+          "index",
+          "position",
+          "start index",
+          "next element",
+          "recurse",
+          "recursive",
+          "recursion"
+        ],
+        "probe": "How does the recursion move through the list from one element to the next?"
+      },
+      {
+        "id": "k3",
+        "description": "a base case at the end of the list that records a copy of the current subset",
+        "keywords": [
+          "base case",
+          "end of the list",
+          "reached the end",
+          "copy",
+          "add the current",
+          "record",
+          "append the current"
+        ],
+        "probe": "When does the recursion stop, and what do you save at that point?"
+      },
+      {
+        "id": "k4",
+        "description": "backtracking: removing the element after exploring the include branch",
+        "keywords": [
+          "backtrack",
+          "undo",
+          "remove it",
+          "pop",
+          "remove the last",
+          "restore"
+        ],
+        "probe": "After exploring the branch where you included an element, what must you do before the other branch?"
+      },
+      {
+        "id": "k5",
+        "description": "2^n subsets, so O(n times 2^n) time",
+        "keywords": [
+          "2^n",
+          "2 to the n",
+          "two to the n",
+          "exponential",
+          "o(n*2^n)",
+          "n times 2"
+        ],
+        "probe": "How many subsets are there, and what does that mean for the running time?"
+      }
+    ],
+    "model_answer": "For each element there are two choices: include it or exclude it. Recurse with an index moving through the list. When the index reaches the end, save a copy of the current subset. After the include branch, remove the element (backtrack) and explore the exclude branch. There are 2^n subsets, so the time is O(n times 2^n)."
+  },
+  {
+    "id": "kth-largest",
+    "topic": "sorting",
+    "title": "Kth Largest Element",
+    "prompt": "How would you find the kth largest element in an unsorted array? Compare a couple of approaches.",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "the simple approach of sorting and indexing, at O(n log n)",
+        "keywords": [
+          "sort",
+          "sorted",
+          "sorting"
+        ],
+        "probe": "What is the simplest way to solve this, and what does it cost?"
+      },
+      {
+        "id": "k2",
+        "description": "a min-heap of size k, keeping the k largest elements seen so far",
+        "keywords": [
+          "heap",
+          "min heap",
+          "min-heap",
+          "priority queue"
+        ],
+        "probe": "Can you do better when k is small? What structure could keep only the k largest values?"
+      },
+      {
+        "id": "k3",
+        "description": "O(n log k) time for the heap approach",
+        "keywords": [
+          "o(nlogk)",
+          "nlogk",
+          "n log k"
+        ],
+        "probe": "What's the time complexity of the heap approach?"
+      },
+      {
+        "id": "k4",
+        "description": "quickselect, which partitions like quicksort and only recurses into one side",
+        "keywords": [
+          "quickselect",
+          "quick select",
+          "partition",
+          "one side",
+          "only one side"
+        ],
+        "probe": "Is there an approach based on quicksort's partitioning that avoids sorting everything?"
+      },
+      {
+        "id": "k5",
+        "description": "quickselect averaging O(n) but O(n^2) in the worst case",
+        "keywords": [
+          "o(n)",
+          "linear",
+          "average",
+          "worst case",
+          "o(n^2)",
+          "n squared"
+        ],
+        "probe": "What are quickselect's average and worst-case complexities?"
+      }
+    ],
+    "model_answer": "The simple way is to sort and take the kth largest, which is O(n log n). Better, keep a min-heap of size k while scanning, which is O(n log k) and the heap's top is the answer. Quickselect partitions like quicksort and recurses into only the side containing the kth element, giving O(n) on average but O(n squared) in the worst case."
+  },
+  {
+    "id": "sort-colors",
+    "topic": "sorting",
+    "title": "Sort Colors",
+    "prompt": "Given an array containing only 0s, 1s and 2s, how would you sort it in place in a single pass?",
+    "key_points": [
+      {
+        "id": "k1",
+        "description": "the simple two-pass approach of counting each value and then overwriting the array",
+        "keywords": [
+          "count",
+          "counting",
+          "two pass",
+          "two passes"
+        ],
+        "probe": "What is an easy way to solve it, even if it takes two passes?"
+      },
+      {
+        "id": "k2",
+        "description": "three pointers: low for the next 0, high for the next 2, and a current pointer",
+        "keywords": [
+          "three pointers",
+          "three pointer",
+          "dutch national flag",
+          "dutch flag",
+          "low and high",
+          "mid pointer"
+        ],
+        "probe": "How could you do it in one pass? How many pointers would you keep?"
+      },
+      {
+        "id": "k3",
+        "description": "swapping 0s toward the front and 2s toward the back",
+        "keywords": [
+          "swap",
+          "swapping"
+        ],
+        "probe": "What do you do when the current value is 0, and when it is 2?"
+      },
+      {
+        "id": "k4",
+        "description": "not advancing the current pointer after swapping with the back, because the swapped-in value is unchecked",
+        "keywords": [
+          "not advance",
+          "don't advance",
+          "do not advance",
+          "do not move",
+          "unchecked",
+          "haven't checked",
+          "not checked"
+        ],
+        "probe": "After swapping with the back, should the current pointer move forward? Why or why not?"
+      },
+      {
+        "id": "k5",
+        "description": "O(n) time in one pass and O(1) extra space",
+        "keywords": [
+          "o(n)",
+          "linear",
+          "one pass",
+          "single pass",
+          "o(1)",
+          "constant space"
+        ],
+        "probe": "What are the time and space complexities?"
+      }
+    ],
+    "model_answer": "The easy way counts the 0s, 1s and 2s and rewrites the array, which takes two passes. For one pass use three pointers, the Dutch national flag method: low for the next 0 slot, high for the next 2 slot, and a current pointer. A 0 is swapped to low, a 2 is swapped to high, and a 1 stays. After swapping with high, do not advance the current pointer, since the swapped-in value is unchecked. It is O(n) time and O(1) space."
+  }
+]
